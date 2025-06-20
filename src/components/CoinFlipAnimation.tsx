@@ -1,17 +1,32 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Zap, TrendingUp } from 'lucide-react';
 
 interface CoinFlipAnimationProps {
   isFlipping?: boolean;
   result?: 'heads' | 'tails' | null;
+  onAnimationComplete?: () => void;
 }
 
 const CoinFlipAnimation: React.FC<CoinFlipAnimationProps> = ({ 
   isFlipping = false, 
-  result = null 
+  result = null,
+  onAnimationComplete
 }) => {
+  const [animationClass, setAnimationClass] = useState('');
+
+  useEffect(() => {
+    if (isFlipping) {
+      setAnimationClass('animate-[spin_2s_ease-in-out]');
+      const timer = setTimeout(() => {
+        setAnimationClass('');
+        onAnimationComplete?.();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFlipping, onAnimationComplete]);
+
   return (
     <div className="relative flex flex-col items-center w-full">
       {/* Pool info at top */}
@@ -31,14 +46,17 @@ const CoinFlipAnimation: React.FC<CoinFlipAnimationProps> = ({
         
         <div className={cn(
           "relative w-32 h-32 perspective-1000",
-          isFlipping && "animate-spin"
-        )}>
+          animationClass
+        )} style={{ perspective: '1000px' }}>
           <div className={cn(
             "w-full h-full rounded-full bg-gradient-to-br from-yellow-300 via-yellow-400 to-orange-500 shadow-2xl transform-gpu transition-transform duration-700",
             "border-4 border-yellow-200 relative overflow-hidden",
             "flex items-center justify-center",
-            isFlipping && "animate-bounce"
-          )}>
+            isFlipping && "animate-[flip_2s_ease-in-out,bounce_2s_ease-in-out]"
+          )} style={{
+            transformStyle: 'preserve-3d',
+            animation: isFlipping ? 'flip 2s ease-in-out, bounce 2s ease-in-out' : undefined
+          }}>
             {/* Coin texture */}
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent" />
             
@@ -111,6 +129,21 @@ const CoinFlipAnimation: React.FC<CoinFlipAnimationProps> = ({
         <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
         <span className="text-red-300 font-bold text-sm">LIVE BETTING</span>
       </div>
+
+      {/* Add CSS keyframes for 3D flip animation */}
+      <style jsx>{`
+        @keyframes flip {
+          0% { transform: rotateY(0deg) rotateX(0deg); }
+          25% { transform: rotateY(90deg) rotateX(45deg); }
+          50% { transform: rotateY(180deg) rotateX(90deg); }
+          75% { transform: rotateY(270deg) rotateX(135deg); }
+          100% { transform: rotateY(360deg) rotateX(180deg); }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-20px) scale(1.1); }
+        }
+      `}</style>
     </div>
   );
 };

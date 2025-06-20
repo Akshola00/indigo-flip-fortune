@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/Header';
 import CoinFlipAnimation from '@/components/CoinFlipAnimation';
 import StakeSection from '@/components/StakeSection';
@@ -8,6 +8,25 @@ import PoolActivity from '@/components/PoolActivity';
 import GameChat from '@/components/GameChat';
 
 const Index = () => {
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [result, setResult] = useState<'heads' | 'tails' | null>(null);
+
+  const handlePlaceStake = () => {
+    setIsFlipping(true);
+    setResult(null);
+    
+    // Simulate coin flip result after animation
+    setTimeout(() => {
+      const outcomes: ('heads' | 'tails')[] = ['heads', 'tails'];
+      const randomResult = outcomes[Math.floor(Math.random() * outcomes.length)];
+      setResult(randomResult);
+    }, 2000);
+  };
+
+  const handleAnimationComplete = () => {
+    setIsFlipping(false);
+  };
+
   return (
     <div className="h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 overflow-hidden">
       {/* Background effects */}
@@ -16,28 +35,60 @@ const Index = () => {
       <div className="relative z-10 h-full flex flex-col p-4">
         <Header />
         
-        {/* Main content area */}
-        <div className="flex-1 grid grid-cols-12 gap-4 min-h-0">
-          {/* Left sidebar - Stake and Choose Side */}
-          <div className="col-span-3 space-y-3">
-            <StakeSection />
-            <ChooseSideSection />
+        {/* Desktop Layout */}
+        <div className="hidden lg:block flex-1 min-h-0">
+          <div className="grid grid-cols-12 gap-4 h-full">
+            {/* Left sidebar - Stake and Choose Side */}
+            <div className="col-span-3 space-y-3">
+              <StakeSection onPlaceStake={handlePlaceStake} />
+              <ChooseSideSection />
+            </div>
+            
+            {/* Center - Coin Animation */}
+            <div className="col-span-6 flex flex-col items-center justify-center">
+              <CoinFlipAnimation 
+                isFlipping={isFlipping} 
+                result={result}
+                onAnimationComplete={handleAnimationComplete}
+              />
+            </div>
+            
+            {/* Right sidebar - Pool Activity and Chat */}
+            <div className="col-span-3 space-y-3">
+              <PoolActivity />
+              <GameChat />
+            </div>
           </div>
-          
-          {/* Center - Coin Animation */}
-          <div className="col-span-6 flex flex-col items-center justify-center">
-            <CoinFlipAnimation />
-          </div>
-          
-          {/* Right sidebar - Pool Activity and Chat */}
-          <div className="col-span-3 space-y-3">
-            <PoolActivity />
-            <GameChat />
+        </div>
+
+        {/* Mobile Layout - Scrollable */}
+        <div className="lg:hidden flex-1 overflow-y-auto">
+          <div className="space-y-4 pb-4">
+            {/* Coin Animation at top for mobile */}
+            <div className="flex justify-center py-4">
+              <CoinFlipAnimation 
+                isFlipping={isFlipping} 
+                result={result}
+                onAnimationComplete={handleAnimationComplete}
+              />
+            </div>
+            
+            {/* Stake and Choose Side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <StakeSection onPlaceStake={handlePlaceStake} />
+              <ChooseSideSection />
+            </div>
+            
+            {/* Pool Activity and Chat */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <PoolActivity />
+              <GameChat />
+            </div>
           </div>
         </div>
         
-        {/* Bottom stats */}
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        {/* Bottom stats - Desktop only */}
+        <div className="hidden lg:grid grid-cols-3 gap-4 mt-4">
           <div className="bg-black/20 backdrop-blur-md border border-yellow-500/20 rounded-lg p-3 text-center">
             <div className="text-xl font-black text-yellow-400 mb-1">1,247</div>
             <div className="text-yellow-200 text-xs font-medium">TOTAL DEGENS</div>

@@ -4,14 +4,42 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MessageCircle, Send } from 'lucide-react';
 
+interface Message {
+  id: number;
+  user: string;
+  message: string;
+  time: string;
+  avatar: string;
+}
+
 const GameChat: React.FC = () => {
   const [message, setMessage] = useState('');
-  const [messages] = useState([
+  const [messages, setMessages] = useState<Message[]>([
     { id: 1, user: 'Birdmann', message: 'yessss 1000x 🚀', time: '2m', avatar: 'B' },
     { id: 2, user: 'Yunus', message: 'wen moon?', time: '3m', avatar: 'Y' },
     { id: 3, user: 'Zyrick', message: 'diamond hands 💎', time: '5m', avatar: 'Z' },
     { id: 4, user: 'Gregory', message: 'stake is fire 🔥', time: '7m', avatar: 'G' },
   ]);
+
+  const sendMessage = () => {
+    if (message.trim()) {
+      const newMessage: Message = {
+        id: messages.length + 1,
+        user: 'You',
+        message: message.trim(),
+        time: 'now',
+        avatar: 'Y'
+      };
+      setMessages([newMessage, ...messages]);
+      setMessage('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
 
   return (
     <div className="bg-black/20 backdrop-blur-md border border-yellow-500/20 rounded-xl p-4 shadow-2xl h-full flex flex-col">
@@ -47,11 +75,11 @@ const GameChat: React.FC = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="bg-black/30 border-yellow-500/30 text-yellow-300 placeholder:text-gray-500 text-xs h-8"
-          onKeyPress={(e) => e.key === 'Enter' && setMessage('')}
+          onKeyPress={handleKeyPress}
         />
         <Button 
           size="sm" 
-          onClick={() => setMessage('')}
+          onClick={sendMessage}
           className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold h-8 w-8 p-0"
         >
           <Send className="w-3 h-3" />

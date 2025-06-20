@@ -4,9 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TrendingUp, DollarSign } from 'lucide-react';
 
-const StakeSection: React.FC = () => {
+interface StakeSectionProps {
+  onPlaceStake?: () => void;
+}
+
+const StakeSection: React.FC<StakeSectionProps> = ({ onPlaceStake }) => {
   const [stakeAmount, setStakeAmount] = useState('');
   const quickAmounts = [1, 5, 10, 50, 100];
+
+  const handlePlaceStake = () => {
+    if (stakeAmount && onPlaceStake) {
+      onPlaceStake();
+      // Reset stake amount after placing
+      setTimeout(() => setStakeAmount(''), 2000);
+    }
+  };
 
   return (
     <div className="bg-black/20 backdrop-blur-md border border-yellow-500/20 rounded-xl p-4 shadow-2xl">
@@ -51,6 +63,7 @@ const StakeSection: React.FC = () => {
         <Button 
           className="w-full h-12 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-black font-black text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
           disabled={!stakeAmount}
+          onClick={handlePlaceStake}
         >
           PLACE STAKE
         </Button>
