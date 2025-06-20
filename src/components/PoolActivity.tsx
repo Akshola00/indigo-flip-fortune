@@ -10,42 +10,42 @@ const PoolActivity: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-500/20 rounded-lg">
-          <Activity className="w-5 h-5 text-blue-400" />
+    <div className="bg-black/20 backdrop-blur-md border border-yellow-500/20 rounded-xl p-4 shadow-2xl">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="p-1 bg-yellow-500/20 rounded-lg">
+          <Activity className="w-4 h-4 text-yellow-400" />
         </div>
-        <h3 className="text-xl font-bold text-white">Current Pool Activity</h3>
+        <h3 className="text-lg font-black text-yellow-400">POOLS</h3>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {pools.map((pool) => (
           <div 
             key={pool.id}
-            className="bg-white/5 border border-white/10 rounded-lg p-4 hover:bg-white/10 transition-all duration-200"
+            className="bg-black/30 border border-yellow-500/20 rounded-lg p-3 hover:bg-black/40 transition-all duration-200"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-indigo-300 font-medium">Pool #{pool.id}</span>
+                <span className="text-yellow-300 font-black text-sm">#{pool.id}</span>
                 <div className={`w-2 h-2 rounded-full ${
                   pool.status === 'active' ? 'bg-green-400 animate-pulse' : 'bg-gray-400'
                 }`} />
               </div>
               <div className="flex items-center gap-1 text-gray-300">
                 <Clock className="w-3 h-3" />
-                <span className="text-xs">{pool.timeLeft}</span>
+                <span className="text-xs font-bold">{pool.timeLeft}</span>
               </div>
             </div>
             
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1 text-white">
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                  <span className="font-semibold">{pool.amount} STRK</span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 text-yellow-300">
+                  <TrendingUp className="w-3 h-3 text-green-400" />
+                  <span className="font-black text-sm">{pool.amount}</span>
                 </div>
                 <div className="flex items-center gap-1 text-gray-300">
-                  <Users className="w-4 h-4" />
-                  <span className="text-sm">{pool.participants}</span>
+                  <Users className="w-3 h-3" />
+                  <span className="text-xs font-bold">{pool.participants}</span>
                 </div>
               </div>
             </div>
